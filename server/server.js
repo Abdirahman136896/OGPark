@@ -34,6 +34,23 @@ app.get("/spots", (req, res) => {
 app.post('/data', (req, res) => {
     console.log('Received sensor data:', req.body);
     res.sendStatus(200);
+    const key = parseInt(Object.keys(req.body)[0]);
+    
+    // Convert the key from ASCII to character
+    const character = String.fromCharCode(key);
+    
+    console.log('Parsed sensor data:', character);
+
+    const parkingCenterRef = db.collection('parkingcenters').doc('NsTLzu7lFoZDQrjaQAaRAyZf47V2');
+    parkingCenterRef.update({ available: parseInt(character) })
+        .then(() => {
+            console.log('Parking center updated successfully');
+            //res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.error('Error updating parking center:', error);
+            res.sendStatus(500);
+        });
 });
 
 const PORT = process.env.PORT || 5000;
